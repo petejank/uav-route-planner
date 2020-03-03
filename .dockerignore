@@ -1,0 +1,10 @@
+# Client
+client/node_modules
+client/dist
+client/coverage
+
+# Server
+server/.gradle
+server/.idea
+server/build
+server/bin

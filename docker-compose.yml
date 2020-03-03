@@ -1,0 +1,43 @@
+version: '3'
+services:
+  database:
+    build:
+      context: .
+      dockerfile: ./docker/database/Dockerfile
+    image: uav_app_database
+    container_name: uav_app_database
+    restart: always
+    env_file:
+      - .env
+    expose:
+      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 1s
+      timeout: 5s
+      retries: 100
+  server:
+    build:
+      context: .
+      dockerfile: ./docker/server/Dockerfile
+    image: uav_app_server
+    container_name: uav_app_server
+    restart: always
+    depends_on:
+      - database
+    env_file:
+      - .env
+    ports:
+      - "8001:8001"
+  client:
+    build:
+      context: .
+      dockerfile: ./docker/client/Dockerfile
+    image: uav_app_client
+    container_name: uav_app_client
+    restart: always
+    depends_on:
+      - database
+      - server
+    ports:
+      - "80:80"
